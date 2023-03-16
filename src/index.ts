@@ -1,17 +1,19 @@
 import { delay } from 'bluebird';
-import { createWebhook } from './createWebhook';
+import { Webhook } from 'discord-webhook-node';
+
+import { blogPostId, discordWebhookMessage, discordWebhookUrl } from './config';
 import { isThereANewBlog } from './isThereANewBlogPost';
 
-const webhook = createWebhook();
+const webhook = new Webhook(discordWebhookUrl);
 
-let blogPostId = 41282;
+let postId = blogPostId;
 
 export async function run() {
-  const isThereANewBlogPost = await isThereANewBlog(blogPostId);
+  const isThereANewBlogPost = await isThereANewBlog(postId);
 
   if (isThereANewBlogPost) {
-    await webhook.send('There is a new blog post! <@111200558827778048>');
-    blogPostId += 1;
+    await webhook.send(discordWebhookMessage);
+    postId += 1;
   }
 
   await delay(60_000);
